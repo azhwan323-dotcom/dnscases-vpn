@@ -1,0 +1,286 @@
+name: Build APK
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Prepare project
+        run: |
+          mkdir -p www
+          cp index.html www/index.html
+          cat > package.json <<'EOF'
+          {"name":"dns-cases-pro","version":"1.0.0","private":true,"dependencies":{"@capacitor/android":"^6.2.0","@capacitor/cli":"^6.2.0","@capacitor/core":"^6.2.0"}}
+          EOF
+          cat > capacitor.config.json <<'EOF'
+          {"appId":"com.dnscases.pro","appName":"DNS CASES PRO","webDir":"www"}
+          EOF
+          npm install
+          npx cap add android
+          npx cap sync android
+
+      - name: Add VPN code
+        run: |
+          D=android/app/src/main/java/com/dnscases/pro
+          mkdir -p $D
+          cat > $D/DnsVpnService.java <<'EOF'
+          package com.dnscases.pro;
+
+          import android.content.Intent;
+          import android.net.VpnService;
+          import android.os.ParcelFileDescriptor;
+
+          import java.io.FileInputStream;
+          import java.io.FileOutputStream;
+          import java.net.DatagramPacket;
+          import java.net.DatagramSocket;
+          import java.net.InetAddress;
+          import java.util.Arrays;
+          import java.util.concurrent.ExecutorService;
+          import java.util.concurrent.Executors;
+
+          public class DnsVpnService extends VpnService {
+              public static final String ACTION_STOP = "com.dnscases.pro.STOP";
+              private ParcelFileDescriptor tun;
+              private volatile boolean running = false;
+              private Thread loop;
+              private ExecutorService pool;
+
+              @Override
+              public int onStartCommand(Intent intent, int flags, int startId) {
+                  if (intent != null && ACTION_STOP.equals(intent.getAction())) {
+                      stopVpn();
+                      stopSelf();
+                      return START_NOT_STICKY;
+                  }
+                  String d1 = intent != null ? intent.getStringExtra("dns1") : null;
+                  String d2 = intent != null ? intent.getStringExtra("dns2") : null;
+                  stopVpn();
+                  startVpn(d1, d2);
+                  return START_NOT_STICKY;
+              }
+
+              private void startVpn(String d1, String d2) {
+                  try {
+                      Builder b = new Builder();
+                      b.setSession("DNS CASES PRO");
+                      b.addAddress("10.111.222.1", 32);
+                      boolean any = false;
+                      if (d1 != null && d1.matches("\\d+\\.\\d+\\.\\d+\\.\\d+")) {
+                          b.addDnsServer(d1);
+                          b.addRoute(d1, 32);
+                          any = true;
+                      }
+                      if (d2 != null && d2.matches("\\d+\\.\\d+\\.\\d+\\.\\d+")) {
+                          b.addDnsServer(d2);
+                          b.addRoute(d2, 32);
+                          any = true;
+                      }
+                      if (!any) { stopSelf(); return; }
+                      tun = b.establish();
+                      if (tun == null) { stopSelf(); return; }
+                      running = true;
+                      pool = Executors.newCachedThreadPool();
+                      final FileInputStream in = new FileInputStream(tun.getFileDescriptor());
+                      final FileOutputStream out = new FileOutputStream(tun.getFileDescriptor());
+                      loop = new Thread(new Runnable() {
+                          @Override public void run() { pump(in, out); }
+                      });
+                      loop.start();
+                  } catch (Exception e) {
+                      stopVpn();
+                      stopSelf();
+                  }
+              }
+
+              // Read packets from the tunnel; forward only DNS (UDP) queries to the real DNS server.
+              private void pump(FileInputStream in, final FileOutputStream out) {
+                  byte[] buf = new byte[32767];
+                  while (running) {
+                      try {
+                          int n = in.read(buf);
+                          if (n <= 0) { Thread.sleep(10); continue; }
+                          if (((buf[0] >> 4) & 0xF) != 4) continue;
+                          final int ihl = (buf[0] & 0xF) * 4;
+                          if ((buf[9] & 0xFF) != 17) continue;
+                          final byte[] pkt = Arrays.copyOf(buf, n);
+                          pool.execute(new Runnable() {
+                              @Override public void run() { handle(pkt, ihl, out); }
+                          });
+                      } catch (Exception e) {
+                          if (!running) break;
+                      }
+                  }
+              }
+
+              private void handle(byte[] p, int ihl, FileOutputStream out) {
+                  DatagramSocket s = null;
+                  try {
+                      int srcPort = ((p[ihl] & 0xFF) << 8) | (p[ihl + 1] & 0xFF);
+                      int dstPort = ((p[ihl + 2] & 0xFF) << 8) | (p[ihl + 3] & 0xFF);
+                      int udpLen = ((p[ihl + 4] & 0xFF) << 8) | (p[ihl + 5] & 0xFF);
+                      int payloadLen = udpLen - 8;
+                      if (payloadLen <= 0 || ihl + 8 + payloadLen > p.length) return;
+                      byte[] srcIp = Arrays.copyOfRange(p, 12, 16);
+                      byte[] dstIp = Arrays.copyOfRange(p, 16, 20);
+
+                      s = new DatagramSocket();
+                      protect(s);
+                      s.setSoTimeout(5000);
+                      s.send(new DatagramPacket(p, ihl + 8, payloadLen, InetAddress.getByAddress(dstIp), dstPort));
+                      byte[] rb = new byte[4096];
+                      DatagramPacket rp = new DatagramPacket(rb, rb.length);
+                      s.receive(rp);
+
+                      int len = 20 + 8 + rp.getLength();
+                      byte[] r = new byte[len];
+                      r[0] = 0x45;
+                      r[2] = (byte) (len >> 8); r[3] = (byte) len;
+                      r[6] = 0x40;
+                      r[8] = 64; r[9] = 17;
+                      System.arraycopy(dstIp, 0, r, 12, 4);
+                      System.arraycopy(srcIp, 0, r, 16, 4);
+                      int c = checksum(r, 20);
+                      r[10] = (byte) (c >> 8); r[11] = (byte) c;
+                      r[20] = (byte) (dstPort >> 8); r[21] = (byte) dstPort;
+                      r[22] = (byte) (srcPort >> 8); r[23] = (byte) srcPort;
+                      int ul = 8 + rp.getLength();
+                      r[24] = (byte) (ul >> 8); r[25] = (byte) ul;
+                      System.arraycopy(rb, 0, r, 28, rp.getLength());
+                      synchronized (out) { out.write(r); }
+                  } catch (Exception ignored) {
+                  } finally {
+                      if (s != null) s.close();
+                  }
+              }
+
+              private static int checksum(byte[] b, int len) {
+                  long sum = 0;
+                  for (int i = 0; i < len; i += 2) {
+                      sum += ((b[i] & 0xFF) << 8) | (b[i + 1] & 0xFF);
+                  }
+                  while ((sum >> 16) != 0) sum = (sum & 0xFFFF) + (sum >> 16);
+                  return (int) (~sum & 0xFFFF);
+              }
+
+              private void stopVpn() {
+                  running = false;
+                  try { if (tun != null) tun.close(); } catch (Exception ignored) {}
+                  tun = null;
+                  if (pool != null) { pool.shutdownNow(); pool = null; }
+              }
+
+              @Override
+              public void onRevoke() {
+                  stopVpn();
+                  super.onRevoke();
+              }
+
+              @Override
+              public void onDestroy() {
+                  stopVpn();
+                  super.onDestroy();
+              }
+          }
+          EOF
+          cat > $D/DnsVpnPlugin.java <<'EOF'
+          package com.dnscases.pro;
+
+          import android.app.Activity;
+          import android.content.Intent;
+          import android.net.VpnService;
+
+          import androidx.activity.result.ActivityResult;
+
+          import com.getcapacitor.Plugin;
+          import com.getcapacitor.PluginCall;
+          import com.getcapacitor.PluginMethod;
+          import com.getcapacitor.annotation.ActivityCallback;
+          import com.getcapacitor.annotation.CapacitorPlugin;
+
+          @CapacitorPlugin(name = "DnsVpn")
+          public class DnsVpnPlugin extends Plugin {
+
+              private void launch(String d1, String d2) {
+                  Intent i = new Intent(getContext(), DnsVpnService.class);
+                  i.putExtra("dns1", d1);
+                  i.putExtra("dns2", d2);
+                  getContext().startService(i);
+              }
+
+              @PluginMethod
+              public void start(PluginCall call) {
+                  Intent prep = VpnService.prepare(getContext());
+                  if (prep != null) {
+                      startActivityForResult(call, prep, "vpnResult");
+                  } else {
+                      launch(call.getString("dns1"), call.getString("dns2"));
+                      call.resolve();
+                  }
+              }
+
+              @ActivityCallback
+              private void vpnResult(PluginCall call, ActivityResult result) {
+                  if (call == null) return;
+                  if (result.getResultCode() == Activity.RESULT_OK) {
+                      launch(call.getString("dns1"), call.getString("dns2"));
+                      call.resolve();
+                  } else {
+                      call.reject("denied");
+                  }
+              }
+
+              @PluginMethod
+              public void stop(PluginCall call) {
+                  Intent i = new Intent(getContext(), DnsVpnService.class);
+                  i.setAction(DnsVpnService.ACTION_STOP);
+                  getContext().startService(i);
+                  call.resolve();
+              }
+          }
+          EOF
+          cat > $D/MainActivity.java <<'EOF'
+          package com.dnscases.pro;
+
+          import android.os.Bundle;
+          import com.getcapacitor.BridgeActivity;
+
+          public class MainActivity extends BridgeActivity {
+              @Override
+              public void onCreate(Bundle savedInstanceState) {
+                  registerPlugin(DnsVpnPlugin.class);
+                  super.onCreate(savedInstanceState);
+              }
+          }
+          EOF
+          python3 - <<'PY'
+          p='android/app/src/main/AndroidManifest.xml'
+          s=open(p,encoding='utf-8').read()
+          svc='<service android:name=".DnsVpnService" android:permission="android.permission.BIND_VPN_SERVICE" android:exported="false"><intent-filter><action android:name="android.net.VpnService"/></intent-filter></service></application>'
+          if 'DnsVpnService' not in s:
+              s=s.replace('</application>',svc,1)
+          open(p,'w',encoding='utf-8').write(s)
+          PY
+
+      - name: Build
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DNS-CASES-PRO-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
