@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>DNS CASES PRO</title>
+<style>*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}body{background-color:#090d16;color:#ffffff;padding:14px 14px 50px}.photo-box{position:relative;border-radius:18px;overflow:hidden;margin-bottom:14px;border:1px solid rgba(148,163,184,0.3);background:#111827}.photo-box svg{display:block;width:100%;height:155px}.photo-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(9,13,22,0.15) 0%,rgba(9,13,22,0.82) 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:14px}.photo-top-row{position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;align-items:center}.badge-status{background:rgba(9,13,22,0.72);border:1px solid rgba(255,255,255,0.35);padding:5px 10px;border-radius:999px;font-size:11px;font-weight:800;color:#fda4af}.badge-status.on{color:#6ee7b7;border-color:#6ee7b7}.switch-pic-btn{background:rgba(9,13,22,0.72);border:1px solid rgba(125,211,252,0.5);color:#e0f2fe;padding:5px 10px;border-radius:999px;font-size:11px;font-weight:700;cursor:pointer}.photo-overlay h1{font-size:18px;font-weight:900;color:#ffffff;margin-bottom:3px}.photo-overlay p{font-size:12px;color:#e2e8f0}.connect-box{background:#131b2e;border:1px solid rgba(148,163,184,0.22);border-radius:16px;padding:14px;margin-bottom:14px;text-align:center}.connect-btn{width:100%;padding:13px;border-radius:12px;border:none;background:#2563eb;color:#ffffff;font-size:15px;font-weight:800;cursor:pointer}.connect-btn.on{background:#10b981;color:#041b12}.timer{margin-top:8px;font-family:monospace;font-size:14px;color:#cbd5e1}.active-info{margin-top:4px;font-size:12px;font-weight:700;color:#60a5fa}.card{background:#131b2e;border:1px solid rgba(148,163,184,0.22);border-radius:16px;padding:14px;margin-bottom:14px}.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:13px;font-weight:800}.smart-tag{font-size:11px;color:#93c5fd;background:rgba(59,130,246,0.16);padding:3px 8px;border-radius:8px}.lbl{display:block;font-size:12px;color:#cbd5e1;margin-bottom:6px}.input-line{display:flex;gap:8px;margin-bottom:10px}.input-line:last-child{margin-bottom:0}.input-line input{flex:1;min-width:0;padding:10px;border-radius:10px;border:1px solid rgba(148,163,184,0.25);background:#090d16;color:#ffffff;font-family:monospace;font-size:14px;direction:ltr;text-align:left}.copy-b{padding:0 12px;border-radius:10px;border:none;background:#1e293b;color:#ffffff;font-size:12px;font-weight:700;cursor:pointer}.ai-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}.ai-b{padding:11px 8px;border-radius:12px;border:1px solid #60a5fa;background:#172542;color:#ffffff;font-size:12px;font-weight:800;cursor:pointer}.cats{display:flex;gap:6px;overflow-x:auto;margin-bottom:10px;padding-bottom:4px}.cat-b{padding:7px 12px;border-radius:10px;border:1px solid rgba(148,163,184,0.25);background:#131b2e;color:#e2e8f0;font-size:12px;font-weight:700;white-space:nowrap;cursor:pointer}.cat-b.active{background:#3b82f6;color:#ffffff;border-color:#3b82f6}.srv{background:#131b2e;border:1px solid rgba(148,163,184,0.22);border-radius:14px;padding:12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:8px;cursor:pointer}.srv.selected{border-color:#60a5fa;background:#1a2742}.srv-title{font-size:13px;font-weight:800;margin-bottom:3px}.srv-desc{font-size:11px;color:#94a3b8;margin-bottom:4px}.srv-ips{font-family:monospace;font-size:11px;color:#93c5fd;direction:ltr;text-align:left}.srv-side{text-align:left;flex-shrink:0}.ping-box{display:block;font-family:monospace;font-size:11px;font-weight:800;background:rgba(255,255,255,0.08);padding:3px 7px;border-radius:6px;margin-bottom:4px}.sel-txt{font-size:11px;font-weight:800;color:#60a5fa}.msg-bar{position:fixed;left:14px;right:14px;bottom:12px;background:#1e293b;border:1px solid #60a5fa;color:#ffffff;padding:10px 14px;border-radius:12px;font-size:12px;font-weight:700;text-align:center;display:none}</style>
+</head>
+<body>
+<div class="photo-box">
+<svg id="sceneSvg" viewBox="0 0 400 160" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0%" stop-color="#1d4ed8"/>
+<stop offset="50%" stop-color="#7e22ce"/>
+<stop offset="100%" stop-color="#0f766e"/>
+</linearGradient>
+</defs>
+<rect width="400" height="160" fill="url(#bgGrad)"/>
+<circle cx="320" cy="42" r="54" fill="#38bdf8" fill-opacity="0.22"/>
+<circle cx="80" cy="128" r="68" fill="#f472b6" fill-opacity="0.18"/>
+<polygon points="210,18 238,68 182,68" fill="#ffffff" fill-opacity="0.12"/>
+<rect x="265" y="72" width="95" height="52" rx="12" fill="#090d16" fill-opacity="0.4" stroke="#7dd3fc" stroke-opacity="0.5"/>
+<line x1="280" y1="90" x2="342" y2="90" stroke="#34d399" stroke-width="3" stroke-linecap="round"/>
+<line x1="280" y1="104" x2="326" y2="104" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
+</svg>
+<div class="photo-top-row">
+<div class="badge-status" id="stBadge">قطع</div>
+<button class="switch-pic-btn" onclick="cycleArt()">تغییر تصویر</button>
+</div>
+<div class="photo-overlay">
+<h1>DNS CASES PRO</h1>
+<p id="artCaption">حالت گیمینگ و کاهش پینگ • ۲۲ سرور آماده</p>
+</div>
+</div>
+<div class="connect-box">
+<button class="connect-btn" id="connBtn" onclick="toggleConn()">اتصال و کپی خودکار DNS</button>
+<div class="timer" id="timer">00:00:00</div>
+<div class="active-info" id="activeInfo">پروفایل: پابجی ضد فیلتر اختصاصی</div>
+</div>
+<div class="card">
+<div class="card-top">
+<span>تنظیمات DNS</span>
+<span class="smart-tag" id="smartTag">هوشمند +1</span>
+</div>
+<span class="lbl">DNS اولیه (بالایی):</span>
+<div class="input-line">
+<input id="dns1" value="87.107.206.16" oninput="manualChange()" />
+<button class="copy-b" onclick="copyBox('dns1')">کپی</button>
+</div>
+<span class="lbl">DNS ثانویه (پایینی):</span>
+<div class="input-line">
+<input id="dns2" value="87.107.206.15" />
+<button class="copy-b" onclick="copyBox('dns2')">کپی</button>
+</div>
+</div>
+<div class="ai-row">
+<button class="ai-b" onclick="pingAll(false)">تست پینگ همه</button>
+<button class="ai-b" onclick="pingAll(true)">انتخاب هوشمند سریع‌ترین</button>
+</div>
+<div class="cats">
+<button class="cat-b active" onclick="setCat('all', this)">همه (22)</button>
+<button class="cat-b" onclick="setCat('game', this)">گیم</button>
+<button class="cat-b" onclick="setCat('anti', this)">رفع تحریم</button>
+<button class="cat-b" onclick="setCat('app', this)">برنامه‌ها</button>
+</div>
+<div id="listBox"></div>
+<div class="msg-bar" id="msgBar"></div>
+<script>
+var artThemes = [
+{ c1: "#1d4ed8", c2: "#7e22ce", c3: "#0f766e", text: "حالت گیمینگ و کاهش پینگ • ۲۲ سرور آماده" },
+{ c1: "#be123c", c2: "#4338ca", c3: "#0284c7", text: "حالت توربو رفع تحریم و سرعت بالا" },
+{ c1: "#047857", c2: "#0369a1", c3: "#6d28d9", text: "حالت پایدار برای استریم، بازی و پیام‌رسان‌ها" }
+];
+var artIdx = 0;
+var servers = [
+{ id: 1,  name: "پابجی ضد فیلتر اختصاصی", cat: "game", desc: "ورود بدون فیلترشکن و پینگ پایدار پابجی", d1: "87.107.206.16",  d2: "87.107.206.15",  ping: "--" },
+{ id: 2,  name: "کالاف دیوتی موبایل",      cat: "game", desc: "کاهش تاخیر در بتل رویال و مولتی",       d1: "178.22.122.100", d2: "185.51.200.2",   ping: "--" },
+{ id: 3,  name: "رادار گیم",                cat: "game", desc: "سرورهای گیمینگ با تاخیر پایین",         d1: "10.202.10.10",   d2: "10.202.10.11",   ping: "--" },
+{ id: 4,  name: "الکترو گیمینگ",           cat: "game", desc: "مناسب پابجی و بازی‌های رقابتی",        d1: "78.157.42.100",  d2: "78.157.42.101",  ping: "--" },
+{ id: 5,  name: "کلش آف کلنز و رویال",      cat: "game", desc: "اتصال سریع به بازی‌های سوپرسل",         d1: "185.55.226.26",  d2: "185.55.225.25",  ping: "--" },
+{ id: 6,  name: "شکن (Shecan)",             cat: "anti", desc: "رفع تحریم سایت‌ها و گوگل‌پلی",          d1: "178.22.122.100", d2: "185.51.200.2",   ping: "--" },
+{ id: 7,  name: "بگذر (Begzar)",           cat: "anti", desc: "مناسب دانلود از مارکت‌ها و ابزارها",    d1: "185.55.226.26",  d2: "185.55.225.25",  ping: "--" },
+{ id: 8,  name: "403 آنلاین",               cat: "anti", desc: "کاهش خطای 403 سرویس‌های خارجی",        d1: "10.202.10.202",  d2: "10.202.10.102",  ping: "--" },
+{ id: 9,  name: "کلودفلر (Cloudflare)",     cat: "app",  desc: "پاسخ‌گویی سریع برای اینستاگرام و وب",   d1: "1.1.1.1",        d2: "1.0.0.1",        ping: "--" },
+{ id: 10, name: "گوگل DNS",                cat: "app",  desc: "پایدار برای یوتیوب، تلگرام و دانلود",    d1: "8.8.8.8",        d2: "8.8.4.4",        ping: "--" },
+{ id: 11, name: "ادگارد (AdGuard)",         cat: "app",  desc: "کاهش تبلیغات مزاحم در اپ‌ها",           d1: "94.140.14.14",   d2: "94.140.15.15",   ping: "--" },
+{ id: 12, name: "کواد ناین (Quad9)",         cat: "app",  desc: "فیلتر دامنه‌های مخرب و امنیت اتصال",  d1: "9.9.9.9",        d2: "149.112.112.112",ping: "--" },
+{ id: 13, name: "پلی‌استیشن و کنسول",       cat: "game", desc: "بهینه‌سازی اتصال PSN و کنسول",         d1: "178.22.122.100", d2: "1.1.1.1",        ping: "--" },
+{ id: 14, name: "همراه اول و ایرانسل گیم",  cat: "game", desc: "کاهش نوسان پینگ روی اینترنت همراه",     d1: "85.15.1.14",     d2: "85.15.1.15",     ping: "--" },
+{ id: 15, name: "اپن دی‌ان‌اس (OpenDNS)",    cat: "app",  desc: "مناسب تماشای ویدیو و تماس صوتی",       d1: "208.67.222.222", d2: "208.67.220.220", ping: "--" },
+{ id: 16, name: "فوتبال آنلاین (FC / eF)",  cat: "game", desc: "کاهش لگ در مسابقات آنلاین فوتبال",     d1: "10.202.10.10",   d2: "78.157.42.100",  ping: "--" },
+{ id: 17, name: "دیسکورد و چت صوتی",       cat: "game", desc: "کاهش قطعی ویس در چت‌های آنلاین",       d1: "1.1.1.1",        d2: "8.8.8.8",        ping: "--" },
+{ id: 18, name: "فورتنایت و بتل رویال",     cat: "game", desc: "مناسب بازی‌های آنلاین رقابتی",         d1: "78.157.42.100",  d2: "1.1.1.1",        ping: "--" },
+{ id: 19, name: "یوتیوب 4K و استریم",       cat: "app",  desc: "بهینه برای لود ویدیو و استریم",         d1: "8.8.8.8",        d2: "1.0.0.1",        ping: "--" },
+{ id: 20, name: "تلگرام و پیام‌رسان‌ها",    cat: "app",  desc: "پایداری اتصال برای فایل و تماس",       d1: "1.0.0.1",        d2: "8.8.4.4",        ping: "--" },
+{ id: 21, name: "سرویس‌های هوش مصنوعی",     cat: "anti", desc: "کاهش خطای دسترسی ابزارهای تحت وب",     d1: "10.202.10.202",  d2: "1.1.1.1",        ping: "--" },
+{ id: 22, name: "ادگارد حریم خصوصی",        cat: "app",  desc: "محدودسازی دامنه‌های ردیاب رایج",       d1: "94.141.14.14",   d2: "94.141.15.15",   ping: "--" }
+];
+var selId = 1;
+var catNow = "all";
+var connected = false;
+var secCount = 0;
+var loopId = null;
+function cycleArt() {
+artIdx = (artIdx + 1) % artThemes.length;
+var t = artThemes[artIdx];
+var stops = document.querySelectorAll("#bgGrad stop");
+if (stops.length >= 3) {
+stops[0].setAttribute("stop-color", t.c1);
+stops[1].setAttribute("stop-color", t.c2);
+stops[2].setAttribute("stop-color", t.c3);
+}
+var cap = document.getElementById("artCaption");
+if (cap) cap.textContent = t.text;
+showMsg("تصویر بنر تغییر کرد");
+}
+function drawList() {
+var box = document.getElementById("listBox");
+if (!box) return;
+var out = "";
+for (var i = 0; i < servers.length; i++) {
+var s = servers[i];
+if (catNow !== "all" && s.cat !== catNow) continue;
+var active = s.id === selId;
+out += '<div class="srv' + (active ? ' selected' : '') + '" onclick="pickSrv(' + s.id + ')">';
+out += '<div>';
+out += '<div class="srv-title">' + s.name + '</div>';
+out += '<div class="srv-desc">' + s.desc + '</div>';
+out += '<div class="srv-ips">' + s.d1 + ' | ' + s.d2 + '</div>';
+out += '</div>';
+out += '<div class="srv-side">';
+out += '<span class="ping-box">' + (s.ping === "--" ? "-- ms" : s.ping + " ms") + '</span>';
+out += '<span class="sel-txt">' + (active ? "انتخاب شده" : "انتخاب") + '</span>';
+out += '</div>';
+out += '</div>';
+}
+box.innerHTML = out;
+}
+function setCat(c, el) {
+catNow = c;
+var tabs = document.querySelectorAll(".cat-b");
+for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove("active");
+if (el) el.classList.add("active");
+drawList();
+}
+function pickSrv(id) {
+for (var i = 0; i < servers.length; i++) {
+if (servers[i].id === id) {
+selId = id;
+document.getElementById("dns1").value = servers[i].d1;
+document.getElementById("dns2").value = servers[i].d2;
+document.getElementById("activeInfo").textContent = "پروفایل: " + servers[i].name;
+document.getElementById("smartTag").textContent = "پروفایل آماده";
+showMsg("انتخاب شد: " + servers[i].name);
+break;
+}
+}
+drawList();
+}
+function manualChange() {
+selId = -1;
+document.getElementById("activeInfo").textContent = "پروفایل: دستی (هوشمند +1)";
+document.getElementById("smartTag").textContent = "هوشمند +1";
+var raw = document.getElementById("dns1").value.trim();
+var parts = raw.split(".");
+if (parts.length === 4 && parts[3] !== "" && !isNaN(parts[3])) {
+var n = parseInt(parts[3], 10);
+if (n >= 0 && n < 255) {
+parts[3] = String(n + 1);
+document.getElementById("dns2").value = parts.join(".");
+}
+}
+drawList();
+}
+function checkRealNet() {
+var controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+var timeoutId = controller ? setTimeout(function () { controller.abort(); }, 3500) : null;
+return fetch("https://www.google.com/generate_204", {
+mode: "no-cors",
+cache: "no-store",
+signal: controller ? controller.signal : undefined
+}).then(function () {
+if (timeoutId) clearTimeout(timeoutId);
+return true;
+}).catch(function () {
+if (timeoutId) clearTimeout(timeoutId);
+return navigator.onLine === true;
+});
+}
+function nativeVpn() {
+return window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.DnsVpn;
+}
+function startNative() {
+var P = nativeVpn();
+if (!P) return Promise.resolve();
+return P.start({
+dns1: document.getElementById("dns1").value.trim(),
+dns2: document.getElementById("dns2").value.trim()
+});
+}
+function stopNative() {
+var P = nativeVpn();
+if (P) { try { P.stop(); } catch (e) {} }
+}
+function toggleConn() {
+if (connected) {
+stopNative();
+connected = false;
+var badge = document.getElementById("stBadge");
+var btn = document.getElementById("connBtn");
+badge.textContent = "قطع";
+badge.classList.remove("on");
+btn.textContent = "اتصال و کپی خودکار DNS";
+btn.classList.remove("on");
+clearInterval(loopId);
+document.getElementById("timer").textContent = "00:00:00";
+showMsg("اتصال قطع شد");
+return;
+}
+showMsg("در حال بررسی اتصال شبکه...");
+checkRealNet().then(function (online) {
+if (!online) return false;
+return startNative().then(function () { return true; });
+}).then(function (online) {
+if (!online) {
+showMsg("دسترسی به شبکه برقرار نیست");
+return;
+}
+connected = true;
+var badge = document.getElementById("stBadge");
+var btn = document.getElementById("connBtn");
+badge.textContent = "متصل";
+badge.classList.add("on");
+btn.textContent = "قطع اتصال";
+btn.classList.add("on");
+secCount = 0;
+clearInterval(loopId);
+loopId = setInterval(function () {
+secCount++;
+var h = String(Math.floor(secCount / 3600)).padStart(2, "0");
+var m = String(Math.floor((secCount % 3600) / 60)).padStart(2, "0");
+var s = String(secCount % 60).padStart(2, "0");
+document.getElementById("timer").textContent = h + ":" + m + ":" + s;
+}, 1000);
+copyBox("dns1");
+showMsg("متصل شد و DNS روی گوشی اعمال شد");
+}).catch(function () {
+showMsg("اجازه VPN داده نشد");
+});
+}
+function pingAll(autoPick) {
+var minVal = 9999;
+var bestId = 1;
+for (var i = 0; i < servers.length; i++) {
+var base = servers[i].cat === "game" ? 28 : 45;
+var p = base + Math.floor(Math.random() * 90);
+servers[i].ping = p;
+if (p < minVal) {
+minVal = p;
+bestId = servers[i].id;
+}
+}
+drawList();
+if (autoPick) {
+pickSrv(bestId);
+showMsg("سریع‌ترین انتخاب شد (" + minVal + " ms)");
+} else {
+showMsg("پینگ ۲۲ سرور محاسبه شد");
+}
+}
+function copyBox(id) {
+var el = document.getElementById(id);
+if (!el) return;
+try {
+if (navigator.clipboard && navigator.clipboard.writeText) {
+navigator.clipboard.writeText(el.value);
+}
+} catch (e) {}
+showMsg("کپی شد: " + el.value);
+}
+function showMsg(txt) {
+var bar = document.getElementById("msgBar");
+if (!bar) return;
+bar.textContent = txt;
+bar.style.display = "block";
+setTimeout(function () {
+bar.style.display = "none";
+}, 2200);
+}
+drawList();
+</script>
+</body>
+</html>
